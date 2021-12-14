@@ -1,0 +1,44 @@
+name: NFV_AG_Journal
+version: "1.0"
+author: Joe Billingsley <jb931@exeter.ac.uk>
+about: Executes tests for paper
+args:
+    - test_id:
+        short: i
+        long: test
+        help: Specifies which test to run.
+        takes_value: true
+    - split:
+        short: s
+        long: split
+        help: Specifies which group of runs to run.
+        takes_value: true
+    - folder:
+        short: o
+        long: output
+        help: Specifies the output folder.
+        takes_value: true
+    - evaluations:
+        short: e
+        long: evaluations
+        help: Sets the number of evaluations.
+        takes_value: true
+    - topologies:
+        short: t
+        long: topologies
+        help: Specifies what topologies to run.
+        takes_value: true
+        possible_values: 
+            - FatTree
+            - DCell
+            - LeafSpine
+    - test_sizes:
+        short: z
+        long: size
+        help: Specifies what size datacentres to run.
+        takes_value: true
+    - num_runs:
+        short: r
+        long: num_runs
+        takes_value: true
+        help: Specifies the number of runs to execute for each test.
