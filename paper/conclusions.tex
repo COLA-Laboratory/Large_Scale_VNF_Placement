@@ -1,0 +1,17 @@
+\section{Conclusions}
+\label{sec:conclusion}
+In this paper we proposed a new MOEA for arbitrary graphs capable of efficiently solving large scale instances of the VNFPP. To this end we proposed:
+\begin{itemize}
+    \item A novel solution representation for large scale, arbitrary network topologies.
+    \item A novel local search based, parallel MOEA that significantly reduces the total algorithm execution time whilst achieving greater solution diversity.
+    \item An improved initialization algorithm that ensures high quality, diverse solutions.
+    \item A novel heuristic model that captures sufficient information about the VNFPP whilst greatly reducing the evaluation time.
+\end{itemize}
+We evaluated the effectiveness of each of these components and found they made significant improvements over state-of-the-art alternatives. By synthesizing these components we demonstrated that our algorithm could solve problem instances with up to 64,000 servers, a 16$\times$ improvement over problems that have been considered in the literature so far. Further, we found that the improved initialization operator combined with the genotype-phenotype solution representation is highly effective on very large problem instances.
+
+Further extensions could be considered in future work. 
+\begin{itemize}
+    \item Our proposed operators combined produce an effective heuristic for the multi-objective VNFPP. It would be interesting to apply the same principles to the single-objective VNFPP which aim to minimize a cost metric and treat QoS requirements as a constraint.
+    \item A challenging problem that remains unresolved is \textit{service resilience} i.e. the capacity for the data center to continue to provide a service when components may fail. This is an instance of a well known NP-Hard problem, graph partitioning, hence approximation algorithms and heuristics will likely be required.
+    \item Finally, future work could extend our metaheuristic into a dynamic optimization problem such as in \cite{OtokuraLKKSM16}. Metaheuristics are well suited to dynamic optimization problems and many algorithmic frameworks have been proposed \cite{AlbaNS13}. This would enable our algorithm to adapt to changing requirements and to present the best set of options at any given moment.
+\end{itemize}

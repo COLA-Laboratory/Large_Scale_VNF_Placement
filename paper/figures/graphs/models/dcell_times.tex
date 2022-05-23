@@ -1,0 +1,61 @@
+\documentclass[a4paper]{standalone}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{patterns}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}
+\begin{tikzpicture}
+
+    \begin{axis}[
+            major x tick style = {opacity=0},
+            xtick=data,
+            xtick pos=left,
+            ylabel style={
+                    yshift=-2ex,
+                },
+            symbolic x coords={500,1000,2000,4000,8000,16000},
+            xminorgrids,
+            minor x tick num = 1,
+            xlabel = {Number of servers},
+            ymode = log,
+            ylabel = Wall clock time (s),
+            width=\textwidth,
+            height=0.4\textwidth,
+            line width = 1pt,
+        ]
+
+        % Accurate
+        \addplot [red, mark=x]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/0.5/time.csv};
+        % M/M/1/K
+        \addplot [blue, mark=+]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/inf/time.csv};
+        % Utilization
+        \addplot [orange, mark=square]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/UtilisationModel/time.csv};
+        % M/M/1
+        \addplot [purple, mark=|]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/MM1Model/time.csv};
+        % Utilization Latency
+        \addplot [brown, mark=o]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/UtilLatencyModel/time.csv};
+        % Perc - Length
+        \addplot [gray, mark=asterisk]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/PercLenModel/time.csv};
+        % Constant
+        \addplot [green, mark=star]
+        table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+            {../../../../processed/model/comparison/DCell/ConstantModel/time.csv};
+
+    \end{axis}
+\end{tikzpicture}
+\end{document}

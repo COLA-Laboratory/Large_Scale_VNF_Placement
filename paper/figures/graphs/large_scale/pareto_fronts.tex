@@ -1,0 +1,159 @@
+\documentclass{standalone}
+\usepackage{pgfplots,pgfplotstable}
+\usetikzlibrary{pgfplots.groupplots}
+\usetikzlibrary{positioning}
+\pgfplotsset{compat=1.16}
+
+% \usepgfplotslibrary{external} 
+% \tikzexternalize
+
+\begin{document}
+\begin{tikzpicture}
+
+    \pgfplotsset{
+        every axis/.append style={
+                font = \Large,
+                line width = 1.25pt,
+                % xmin = 0, xmax = 5, 
+                % ymin = 0, ymax = 0.4, 
+                % zmin = 50000, zmax = 160000
+                xlabel style={sloped},
+                ylabel style={sloped},
+                zlabel style={sloped},
+            },
+        every axis plot post/.append style={
+                every mark/.append style={line width=1.25pt}
+            },
+    }
+    
+    \begin{groupplot}[
+            group style = {group size = 3 by 8, horizontal sep=100pt, vertical sep=50pt},
+        ]
+        
+        % ------ 500 --------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/500/0/51_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/500/0/61_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/500/0/50_11904.objs};
+        
+        
+        % ------ 1000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/1000/0/122_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/1000/0/116_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/1000/0/111_11904.objs};
+        
+        
+        % ------ 2000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/2000/0/240_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/2000/0/245_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/2000/0/216_11904.objs};
+        
+        
+        % ------ 4000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/4000/0/414_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/4000/0/486_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/4000/0/383_11904.objs};
+        
+        
+        % ------ 8000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/8000/0/983_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/8000/0/952_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/8000/0/982_11904.objs};
+        
+        
+        % ------ 16000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/16000/0/1920_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/16000/0/1901_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/16000/0/2106_11904.objs};
+        
+        
+        % ------ 32000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/32000/0/4218_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/32000/0/3810_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/32000/0/3996_11904.objs};
+        
+        % ------ 64000 -------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/FatTree/64000/0/7864_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/LeafSpine/64000/0/7689_11904.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/VLG/DCell/64000/0/6940_11904.objs};
+        
+    \end{groupplot}
+    
+    \node[anchor=south] at ([yshift=1.05cm] group c1r1.north) { \Huge Fat Tree };
+    \node[anchor=south] at ([yshift=1cm] group c2r1.north) { \Huge Leaf-Spine };
+    \node[anchor=south] at ([yshift=1cm] group c3r1.north) { \Huge DCell };
+    
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r1.west) { \Huge 500 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r2.west) { \Huge 1000 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r3.west) { \Huge 2000 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r4.west) { \Huge 4000 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r5.west) { \Huge 8000 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r6.west) { \Huge 16000 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r7.west) { \Huge 32000 servers };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r8.west) { \Huge 64000 servers };
+    
+\end{tikzpicture}
+\end{document}

@@ -1,0 +1,95 @@
+%!TeX root=main.tex
+
+% Check data center component or network component, do not mix the two
+
+\section{Problem Formulation}
+\label{sec:problem_formulation}
+
+In this section, we formally define the VNFPP and its constraints. First, we describe a high level overview of the problem and then provide a formal problem statement.
+
+% TODO: Rejig paragraph
+The aim of the VNFPP is to find a solution that maximizes the QoS of each service and minimizes the total energy consumption. A service is formed by directing traffic through VNFs in a specific order where each VNF of the service is placed in the data center. Each VNF requires a certain amount of resources, and can be assigned to any server that has sufficient resources available. The data center consists of a large number of servers with finite computational resources. These servers can communicate using the network topology, a set of switches that interconnect all servers (see Fig. \ref{fig:topologies}), to provide services that require more resources than one server can provide. Hence a service can be constructed by assigning VNFs to servers with sufficient capacity and describing paths that connect them using the network topology.
+
+% \begin{table}[t!]
+% 	\caption{Lookup table of mathematical notations}
+% 	\label{tab:definition}
+% 	\center
+% 	\begin{tabular}{ll}
+% 		\toprule
+% 		Symbol & Definition \\
+% 		\midrule
+% 		$\mathcal{S}$ & Set of all services \\
+% 		$\mathcal{V}$ & Set of all VNFs \\
+% 		$C_v$ & Resource consumption of VNF $v$ \\
+% 		$\mathcal{C}$ & Set of all network components \\
+% 		$\mathcal{C^\mathsf{sr}}$ & Subset of servers, $\mathcal{C^\mathsf{sr}} \in \mathcal{C}$ \\
+% 		$C^{\mathsf{sr}}$ & Total server resources \\
+% 		$A_{c_\mathsf{sr}}$ & VNFs assigned to server $c_\mathsf{sr}$ \\
+% 		$R^s$ & Set of all routes for service $s$ \\
+% 		$R^s_{i}$ & $i$th route for service $s$ \\
+% 		$R^s_{i,j}$ & $j$th VNF of the $i$th route of service $s$ \\
+% 		$\mathbb{P}_{R^s_i}$ & The probability the route $R^s_{i}$ is taken \\
+
+% 		\midrule
+
+% 		$\mathbb{P}^d_s$ & Packet loss probability of service $s$ \\
+% 		$W_s$ & Latency of service $s$ \\
+
+% 		\midrule
+
+% 		$\lambda_c$ & Arrival rate of component $c$ \\
+% 		$\mu_c$ & Service rate of component $c$ \\
+% 		$N^M_c$ & Queue length of component $c$ \\
+% 		$\mathbb{P}^d_c$ & Packet loss probability of component $c$ \\
+% 		$W_c$ & Waiting time of component $c$ \\
+% 		$U_c$ & Utilization of component $c$ \\
+
+% 		\midrule
+
+% 		$\gamma$ & Iterative model threshold \\
+% 		$\Delta$ & Number of iterations below threshold \\ 
+
+% 		$\abs{\cdot}$ & Cardinality of a set or sequence \\
+% 		\bottomrule
+% 	\end{tabular}
+% \end{table}
+
+We can now formally define the VNFPP. First, we define some core terminology and then we define the objectives and constraints of the problem. $\mathcal{S}$ is the set of services that must be placed and $\mathcal{V}$ is the set of all VNFs. A service is a sequence of VNFs: $s \in S$, $s = \{s_1, s_2, ..., s_n\}$. The network topology is represented as a graph $\mathcal{G}=(\mathcal{C},\mathcal{L})$, where $\mathcal{C}$ denotes the set of data center components and $\mathcal{L}$ denotes the set of links connecting those components. A route is a sequence of data center components where $R^s$ is the set of paths for service $s$, $R_{i}^s$ is the $i$th path of the service and $R_{i,j}^s$ is the $j$th component of the path. Finally, $\abs{\cdot}$ gives the cardinality of a set or a sequence. 
+
+The resource and sequencing constraints of the problem can be formalized as follows:
+
+\begin{enumerate}
+	\item Sequential components in a route must be connected by an edge:
+		\begin{equation}
+			(R_{i,j}^s, R_{i,j+1}^s) \in \mathcal{L}
+		\end{equation}
+    \item The sum resources required by the VNFs assigned to a server cannot exceed the maximum capacity of the server:
+		\begin{equation}
+			\sum_{v \in A_{c_\mathsf{sr}}} C_v < C^{\mathsf{sr}}
+        \end{equation}
+		where $A_{c_\mathsf{sr}}$ is the set of VNFs $v$ assigned to server $c_\mathsf{sr}$, $C_v$ is the resources required by the VNF $v$ and $C^{\mathsf{sr}}$ is the total resources available on a server.
+	\item All VNFs must appear in the route and in the order defined by the service:
+		\begin{align}
+			& \pi^{R^s}_{s_i} \neq \emptyset \\
+			& \pi^{R_i}_{s_i} < \pi^{R_i}_{s_{i+1}} 
+		\end{align}
+		where $\pi^{R_i}_{S_i}$ is the index of the VNF $s_i$ in route $R_i$.
+\end{enumerate}
+
+We consider a three-objective VNFPP including two critical metrics of the QoS, latency and packet loss, and the total energy consumption. As service latency, packet loss and energy consumption can conflict \cite{BillingsleyLMMG22} we formulate the VNFPP as a multi-objective optimization problem. Further, as the number of services in a data center could number in the thousands it is not practical to treat each service quality metric as a separate objective due to the curse of dimensionality. Instead we aim to minimize the aggregate latency and packet loss and the total energy consumption of the data center. Formally, these objectives are defined as:
+
+\begin{itemize}
+	\item The \textit{total energy consumption} $\mathbf{E}$.
+    \item The \textit{mean latency} of the services $\mathbf{L}$:
+        \begin{equation}
+            \mathbf{L}=\sum_{s \in S} W_{s}/|S|,
+        \end{equation}
+        where $W_s$ is the expected latency of the service $s\in S$. 
+    \item The \textit{mean packet loss} of the services $\mathbf{P}$:
+        \begin{equation}
+            \mathbf{P}=\sum_{s \in S} \mathbb{P}^d_s / |S|,
+        \end{equation}
+        where $\mathbb{P}^d_s$ is the packet loss probability of the service $s$.
+\end{itemize}
+
+The exact energy consumption and latency and packet loss of each service for a solution can be found using tools such as discrete event simulation \cite{Pongor93}. However, VNFPP solvers rarely use exact measurements as procuring them can be time consuming. Commonly, accurate models or heuristics of the objective functions are used during the optimization process. Alternative objective functions are discussed in detail in \pref{sec:practical_objective_functions}.

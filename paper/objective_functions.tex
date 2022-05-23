@@ -1,0 +1,130 @@
+\section{Practical Objective Functions for Large Scale VNFPPs}
+\label{sec:practical_objective_functions}
+Since the objective function will be used many times per run, a suitable objective function is critical. Two types of objective function are often used on the VNFPP: accurate models and heuristic models. Accurate models can find accurate estimates of the objective functions by modelling how a typical packet moves through the data center. Heuristic models instead use fast heuristics which correlate with the objective functions, e.g. a common heuristic for latency is the average path length. Heuristic models typically evaluate solutions faster than accurate models but existing proposals are ineffective on multi-objective VNFPPs \cite{BillingsleyLMMG22}. In this work we evaluate models of both types in order to better understand the tradeoffs between model efficiency and effectiveness.
+
+\subsection{Accurate models}
+Accurate models of the VNFPP typically use queueing theory to model the average flow of packets through each component in the data center. A queueing model (QM) will calculate the expected number of packets arriving at each component in the data center based on some assumptions. Next, the component waiting time ($W_c$), packet drop probability ($\mathbb{P}^d_c$) and utilization ($U_c$) can be determined. These metrics can then be used to calculate the average QoS for each service. 
+
+Specifically, the average latency is the sum of the expected waiting time, calculated by:
+\begin{equation}
+	W_s=\sum_{i=1}^{|R^s|} W_{R^s_i} \cdot P_{R^s_i},
+    \label{eq:wt_service}
+\end{equation}
+where $W_{R^s_i}$ is the average latency for the path $R^s_i$. It is calculated as the sum of the waiting time at each network component:
+\begin{equation}
+	W_{R^s_i} = \sum_{c\in R^s_i} W_c.
+    \label{eq:wt_path}
+\end{equation}
+Similarly, the packet loss is the probability a packet does not complete the service which is calculated with the expected packet loss over each path: 
+\begin{equation}
+    \mathbb{P}^d_s=\sum_{i=1}^{|R^s|} \mathbb{P}^d_{R^s_i}\cdot \mathbb{P}_{R^s_i},
+	\label{eq:pl_service}
+\end{equation}
+where $\mathbb{P}^d_{R^s_i}$ is the probability that a packet is dropped on the path $R^s_i$ which is calculated as:
+\begin{equation}
+	\mathbb{P}^d_{R^s_i}=1-\prod_{c\in R^s_i}\left(1-\mathbb{P}^d_c\right).
+	\label{eq:pl_path}
+\end{equation}
+
+Similarly, the expected energy consumption is the sum energy consumption of each component. In this work, we use a three state model of energy consumption where a component can be either \texttt{off}, \texttt{busy} or \texttt{idle}. A component is off if it will not be used, otherwise it is either busy if it is currently servicing packets or idle if it is waiting for packets to arrive. A component uses different amounts of electricity in each state. The total energy consumption of a data center is the sum of the energy consumed by all its components:
+\begin{equation}
+	E_C=\sum_{c\in\mathcal{C}\setminus\mathcal{C}^{\mathsf{vm}}} U_c\cdot E^A+(1-U_c)\cdot E^I,
+	\label{eq:energy}
+\end{equation}
+where $\mathcal{C}^{\mathsf{vm}}$ is the set of VMs and $U_c$ is the active period of the data center component $c$. To calculate $U_c$, we need to consider both single- and multiple-queue devices. The active period of a queue is given by \cite{Kleinrock75}:
+\begin{equation}
+	\overline{U}_c =
+	\begin{cases}
+		0,                           & \rm{if} \ \lambda=0    \\
+		\frac{1-\rho}{1-\rho^{K+1}}, & \rm{if}\ \lambda\le\mu \\
+		\frac{1}{K+1},               & { \rm{otherwise} }
+	\end{cases}.
+\end{equation}
+Physical switches can be modeled with a single-queue for their buffers. Hence the active period of a switch $U_c$ is equal to the active period of its queue:
+\begin{equation}
+	U_{c_\mathsf{sw} \in\mathcal{C}^{\mathsf{sw}}} = \overline{U}_{c_\mathsf{sw}},
+\end{equation}
+where $\mathcal{C}^{\mathsf{sw}}$ is the set of switches. A server has multiple buffers: one for the virtual switch and one for each VNF. The server is \texttt{idle} when no packets are being processed at any of its buffers. Thus, the utilization of a server is calculated as:
+\begin{equation}
+	U_{c_{\mathsf{sr}}\in\mathcal{C}^\mathsf{sr}}=1-\left(1-\overline{U}_{c_\mathsf{sr}^\mathsf{vs}} \right)\cdot\prod_{c_{\mathsf{v}}\in\mathcal{A}_{c_{sr}}}\left(1-\overline{U}_{c_{\mathsf{v}}} \right),
+\end{equation}
+where $\mathcal{C}^\mathsf{sr}$ is the set of servers and $c_\mathsf{sr}^\mathsf{vs}$ is the virtual switch of the server.
+
+QMs can be distinguished by the assumptions that they make. For the VNFPP, most QMs will assume that traffic arrives according to a Poisson distribution and that they a packet is serviced and leaves the queue according to an exponential distribution. The key distinguishing factor is whether the model assumes bounded or unbounded length queues.
+
+\subsubsection{Unbounded Queues}
+Unbounded QMs assume that the queue can grow to be infinitely long. This assumption is unrealistic and exhibits two inaccuracies when used in practice. First, the QM will report that the component packet drop probability $P^d_c = 0$, irregardless of the arrival rate. Second, if the arrival rate exceeds the service rate at any component, the expected length and waiting time of the queue will tend towards infinity. As a result, any service that visits the component will have infinite latency and the solution will be infeasible. In practice, as the arrival rate approaches the service rate, the packet drop probability increases, limiting the maximum length of the queue. Despite these inaccuracies, unbounded QMs are widely used on the VNFPP \cite{GouarebFA18,LeivadeasFLIK18,QuZYSLR20}.
+
+The component utilization, waiting time and packet loss for an unbounded queue can be calculated using standard queueing formula \cite{Kleinrock75}. The component waiting time is given by:
+\begin{equation}
+	\label{eq:mm1_time_in_component}
+    W_c =
+    \begin{cases}
+        \frac{1}{\mu_c - \lambda}_c, & \text{if } \lambda_c > \mu_c \\
+        \infty,                  & \text{otherwise.}
+    \end{cases}
+\end{equation}
+The component utilization is given by:
+\begin{equation}
+	\label{eq:mm1_utilization}
+    U_c = \frac{\lambda_c}{\mu_c},
+\end{equation}
+and the packet loss $P^d_c = 0$.
+
+\subsubsection{Bounded Queues}
+More realistic models acknowledge the presence of packet loss in the network. In the case of bounded queues, each queue has a finite maximum length. If a packet arrives whilst the queue is full, it is dropped and the packet is lost. Hence in a bounded QM, the traffic rate leaving the component will be less than the arrival rate. Additionally, the average queue length grows as the queue utilization increases and so the greater the arrival rate relative to the service rate, the greater the expected packet loss. 
+
+Packet loss can introduce complex interactions between components that are difficult to model. If one component has a high utilization, other components that appear later on the same service path will have a lower arrival rate as a result. If the same component is visited multiple times on the same path, the arrival rate at the component becomes dependent on its own packet loss. The majority of works that use bounded queueing models ignore these interactions and instead calculate the arrival rate at the start of the system before the interactions can occur \cite{ChuaWZSH16,MarottaZDK17}. Recently, we proposed a new method which can be used to accurately calculate the arrival rate at each component \cite{BillingsleyLMMG22}.
+
+Regardless of how the arrival rate is deduced, the component utilization, waiting time and packet loss can be calculated using standard queueing formula for bounded queues \cite{Kleinrock75}. The component waiting time is given by:
+\begin{equation}
+	W_c=\overline{N}/\hat{\lambda}_c,
+    \label{eq:mm1k_wt}
+\end{equation}
+where $\hat{\lambda}_c$ is the effective arrival rate for the component $c$, $\hat{\lambda}_c = \lambda_c\cdot\left(1-P^d_c \right)$, and $\overline{N}$ is the expected queue length at the component $c$~\cite{Kleinrock75}:
+\begin{equation}
+	\overline{N} = \begin{cases}
+		\frac{\rho[1 - (N^M + 1)\rho^{N^M} + N^M\rho^{N^M+1}]}{(1 - \rho)(1 - \rho^{N^M+1})} , & \text{if } \ \lambda \neq \mu \\
+		N^M/2,                                                                      & \text{otherwise.}
+	\end{cases}
+\end{equation}
+where $\rho=\lambda_{c}/\mu_{c}$ and $N^M$ is the maximum queue length. The packet loss $P^d_c$ is given by:
+\begin{equation}
+    P^d_{c}
+	=
+	\begin{cases}
+		\frac{(1-\rho)\rho^{N^M}}{1-\rho^{N^M+1}}, & \text{if}\ \lambda\neq\mu\\
+        \frac{1}{N^M+1}, & \text{otherwise}.
+	\end{cases},
+	\label{eq:mm1k_pl}
+\end{equation}
+And the component utilization, $U_c$ is given by:
+\begin{equation}
+    U_c = \frac{1 - \rho_c}{1 - (\rho_c)^{N^M}}
+    \label{eq:mm1k_utilization}
+\end{equation}
+where $\rho_c = \lambda_c / \mu_c$. 
+
+\subsection{Heuristic models}
+Heuristic models do not calculate the objectives directly but instead optimize metrics about the solution which are expected to correlate with the objectives. Whilst they are often used as a fast replacement for accurate models, existing heuristic models do not capture the tradeoffs between the objectives, resulting in a loss of diversity on multi-objective VNFPPs \cite{BillingsleyLMMG22}. In this paper, we propose a new heuristic model which uses the ratio between the arrival rate and service rate, $\rho_c  = \lambda_c / \mu_c$, as a heuristic for the latency and packet loss.
+
+Intuitively, each objective is minimized by reducing the queue length, which depends on the ratio $\rho_c$. The conflict between objectives occurs because adding more VNFs will distribute traffic over more components, reducing the arrival rate, but also increasing the number of components that may be idle. Hence whilst adding additional VNFs will always reduce the latency and packet loss, it may increase the total energy consumption. 
+
+Using this understanding, we propose a heuristic model that uses the average value of $\rho_c$ of components on each path as a heuristic for the latency and packet loss objectives. To calculate the objectives, we first determine the arrival rate using an unbounded queueing model. Although this model is not accurate, the arrival rate at each component in this model will correlate with the true arrival rate. For the heuristic, the first objective is to minimize the average service utilization, where the service utilization for each service $U_s$ is the expected utilization over the paths:
+\begin{equation}
+	U_s=\sum_{i=1}^{|R^s|} U_{R^s_i} \cdot P_{R^s_i},
+\end{equation}
+and the service utilization $U_{R^s_i}$ is calculated with:
+\begin{equation}
+    U_{R^s_i} = \sum_{c\in R^s_i} \rho_c.
+\end{equation}
+As the energy consumption is a conflicting objective, we also require the optimization algorithm to minimize the total energy consumption using \pref{eq:energy}.
+
+Finally, other heuristic functions have also been proposed in the literature:
+\begin{itemize}
+    \item\underline{Constant waiting time or packet loss (CWTPL)}: As in~\cite{VizarretaCMMK17} and~\cite{HawiloJS19}, this model assumes that the waiting time at each data center component is a constant. In addition, we also keeps the packet loss probability at each component as a constant. Based on these assumptions, we can evaluate the latency and packet loss for each service and use the accurate bounded model to determine the the energy consumption. All these constitute a three-objective problem that aims to minimize the average latency, packet loss and total energy consumption.
+
+    \item\underline{Resource utilization (RU)}: As in~\cite{GuoWLQA0Y20} and~\cite{QiSW19}, this model assumes that the waiting time is a function of the CPU demand and the CPU capacity of each VM. In addition, the demand is assumed to determine the packet loss probability as well. Based on these assumptions, we evaluate the latency for each service and apply the accurate bounded model to determine the the energy consumption. All these constitute a two-objective problem that aims to minimize the average latency (and by extension the packet loss) and the total energy consumption.
+
+    \item\underline{Path length and used servers (PLUS)}: This model uses the percentage of used servers to measure the energy consumption (e.g.,~\cite{MiottoLCG19,RankothgeLRL17,LiuZDLGZ18}) and the length of routes for each service as a measure of service latency, packet loss or quality (e.g.,~\cite{LuizelliCBG17,AllegKMA17}). All these constitute a two-objective problem that aims to minimize the path length and the number of used servers.
+\end{itemize}

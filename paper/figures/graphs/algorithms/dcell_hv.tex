@@ -1,0 +1,54 @@
+\documentclass[a4paper]{standalone}
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{patterns}
+\usepgfplotslibrary{groupplots}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{axis}[
+        symbolic x coords={500,1000,2000,4000,8000,16000},
+        ybar=\pgflinewidth,
+        xtick=data,
+        xtick pos=left,
+        major x tick style = {opacity=0},
+        minor x tick num = 1,
+        xminorgrids,
+        ymin = .4,
+        ymax = .8,
+        width=\textwidth,
+        height=0.4\textwidth,
+        xlabel = {Number of servers},
+        ylabel = Normalized HV,
+        ylabel style={
+                yshift=-2ex,
+            },
+        bar width=6pt, line width = 1pt,
+    ]
+
+    % Proposed
+    \addplot [blue, postaction={pattern=north east lines, pattern color=blue!60}, fill=blue!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit]
+    table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+        {../../../../processed/algorithm_comparison/DCell/PPLS_Simple/hv.csv};
+    % PPLS/D
+    \addplot [red, postaction={pattern=crosshatch dots, pattern color=red!60}, pattern=north west lines, fill=red!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit]
+    table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+        {../../../../processed/algorithm_comparison/DCell/PPLSD/hv.csv};
+    % MOEA/D
+    \addplot [orange, postaction={pattern=north west lines, pattern color=orange!60}, fill=orange!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit]
+    table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+        {../../../../processed/algorithm_comparison/DCell/MOEAD/hv.csv};
+    % IBEA
+    \addplot [purple, postaction={pattern=horizontal lines, pattern color=purple!60}, fill=purple!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit]
+    table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+        {../../../../processed/algorithm_comparison/DCell/IBEA/hv.csv};
+    % NSGA-II
+    \addplot [brown, postaction={pattern=grid, pattern color=brown!60}, fill=brown!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit]
+    table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3]
+        {../../../../processed/algorithm_comparison/DCell/NSGA-II/hv.csv};
+
+    \end{axis}
+\end{tikzpicture}
+\end{document}

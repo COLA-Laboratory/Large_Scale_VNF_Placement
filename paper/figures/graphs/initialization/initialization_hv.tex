@@ -1,0 +1,52 @@
+\documentclass[a4paper]{standalone}
+
+\usepackage{xcolor}
+\usepackage{pgfplots}
+\usepackage{tikz}
+
+\usetikzlibrary{patterns}
+\usepgfplotslibrary{groupplots}
+\pgfplotsset{compat = 1.16}
+
+\begin{document}
+\begin{tikzpicture}
+    \begin{groupplot}[
+            group style={
+                    group size=3 by 1,
+                },
+            ybar=\pgflinewidth,
+            symbolic x coords={500,1000,2000,4000,8000,16000,32000,64000},
+            xtick = {500,1000,2000,4000,8000,16000,32000,64000},
+            tick label style={rotate=-40},
+            area legend,
+            xminorgrids,
+            xtick=data,
+            xtick pos=left,
+            minor x tick num = 1,
+            ymin = 0.4,
+            ymax = 0.7
+        ]
+        \nextgroupplot[xlabel = {Number of servers}, ylabel = {Normalized HV}, line width = 1pt, font=\large,]
+        \addplot [blue, postaction={pattern=crosshatch dots, pattern color=blue!60}, pattern=north west lines, fill=blue!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit] table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3] {../../../../processed/initialization/FatTree/isa/hv.csv};
+        \addplot [red, postaction={pattern=north east lines, pattern color=red!60}, fill=red!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit] table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3] {../../../../processed/initialization/FatTree/sa/hv.csv};
+
+        \nextgroupplot[xlabel = {Number of servers}, line width = 1pt, legend columns = 2, legend style={at={(0.5, 1.2)}, anchor=north, /tikz/every even column/.append style={column sep=0.4cm}}, font=\large,]
+        \addplot [blue, postaction={pattern=crosshatch dots, pattern color=blue!60}, pattern=north west lines, fill=blue!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit] table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3] {../../../../processed/initialization/DCell/isa/hv.csv};
+        \addplot [red, postaction={pattern=north east lines, pattern color=red!60}, fill=red!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit] table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3] {../../../../processed/initialization/DCell/sa/hv.csv};
+
+        \legend{Improved initialization, Previous initialization}
+
+        \nextgroupplot[xlabel = {Number of servers}, line width = 1pt, font=\large,]
+        \addplot [blue, postaction={pattern=crosshatch dots, pattern color=blue!60}, pattern=north west lines, fill=blue!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit] table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3] {../../../../processed/initialization/LeafSpine/isa/hv.csv};
+        \addplot [red, postaction={pattern=north east lines, pattern color=red!60}, fill=red!30, error bars/.cd, error bar style={line width=1pt}, x dir=both, x explicit,y dir=both, y explicit] table[x index = 0, y index = 2, col sep = comma, y error minus index = 1, y error plus index = 3] {../../../../processed/initialization/LeafSpine/sa/hv.csv};
+
+    \end{groupplot}
+
+    \node[anchor=south] at ([yshift=-2.8cm] group c1r1.south) {\Large{(a) Fat Tree}};
+    \node[anchor=south] at ([yshift=-2.8cm] group c2r1.south) {\Large{(b) DCell}};
+    \node[anchor=south] at ([yshift=-2.8cm] group c3r1.south) {\Large{(c) Leaf-Spine}};
+\end{tikzpicture}
+
+\end{document}
+
+

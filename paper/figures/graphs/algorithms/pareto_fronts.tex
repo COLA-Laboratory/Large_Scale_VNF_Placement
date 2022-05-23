@@ -1,0 +1,112 @@
+\documentclass{standalone}
+\usepackage{pgfplots,pgfplotstable}
+\usetikzlibrary{pgfplots.groupplots}
+\usetikzlibrary{positioning}
+\pgfplotsset{compat=1.16}
+
+% \usepgfplotslibrary{external} 
+% \tikzexternalize
+
+\begin{document}
+\begin{tikzpicture}
+
+    \pgfplotsset{
+        every axis/.append style={
+                font = \Large,
+                line width = 1.25pt,
+                % xmin = 0, xmax = 5, 
+                % ymin = 0, ymax = 0.4, 
+                % zmin = 50000, zmax = 120000
+                xlabel style={sloped},
+                ylabel style={sloped},
+                zlabel style={sloped},
+            },
+        every axis plot post/.append style={
+                every mark/.append style={line width=1.25pt}
+            },
+    }
+    
+    \begin{groupplot}[
+            group style = {group size = 5 by 3, horizontal sep=100pt, vertical sep=50pt},
+        ]
+        
+        % -------- Fat Tree ----------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/FatTree/16000/0/PPLS_Simple/1920_11968.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/FatTree/16000/0/PPLSD/1920_12000.objs};
+        
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/FatTree/16000/0/MOEAD/1920_12000.objs};
+        
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/FatTree/16000/0/IBEA/1920_12032.objs};
+        
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/FatTree/16000/0/NSGA-II/1920_12032.objs};
+        
+        % -------- Leaf Spine ----------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h),]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/LeafSpine/16000/0/PPLS_Simple/1901_11968.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/LeafSpine/16000/0/PPLSD/1901_12000.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/LeafSpine/16000/0/MOEAD/1901_12000.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/LeafSpine/16000/0/IBEA/1901_12032.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/LeafSpine/16000/0/NSGA-II/1901_12032.objs};
+        
+        % -------- DCell ----------
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/DCell/16000/0/PPLS_Simple/2106_11968.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/DCell/16000/0/PPLSD/2106_12000.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/DCell/16000/0/MOEAD/2106_12000.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/DCell/16000/0/IBEA/2106_12032.objs};
+        
+        \nextgroupplot[xlabel=Latency (ms), ylabel=Packet loss (\%), zlabel=Energy (kW/h)]
+        \addplot3[only marks, scatter] table[col sep = comma, z filter/.code={\def\pgfmathresult{1.4}}]
+            {../../../../data/AlgCmpReduced/DCell/16000/0/NSGA-II/2106_12032.objs};
+        
+    \end{groupplot}
+    
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r1.west) { \huge Fat Tree };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r2.west) { \huge Leaf-Spine };
+    \node[anchor=south, rotate=90] at ([xshift=-2cm] group c1r3.west) { \huge DCell };
+    
+    \node[anchor=south] at ([yshift=.6cm] group c1r1.north) { \huge Proposed };
+    \node[anchor=south] at ([yshift=.6cm] group c2r1.north) { \huge PPLS/D };
+    \node[anchor=south] at ([yshift=.6cm] group c3r1.north) { \huge MOEA/D };
+    \node[anchor=south] at ([yshift=.6cm] group c4r1.north) { \huge IBEA };
+    \node[anchor=south] at ([yshift=.6cm] group c5r1.north) { \huge NSGA-II };
+    
+\end{tikzpicture}
+\end{document}
